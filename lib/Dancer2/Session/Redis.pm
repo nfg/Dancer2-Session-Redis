@@ -8,12 +8,12 @@ BEGIN {
 }
 
 use Carp qw( carp croak );
-use Dancer2::Core::Types qw( Undef AnyOf InstanceOf );
 use Moo;
 use Redis;
 use Safe::Isa;
 use Try::Tiny;
 use Type::Tiny;
+use Types::Standard qw( Maybe InstanceOf );
 
 with 'Dancer2::Core::Role::SessionFactory';
 
@@ -79,7 +79,7 @@ has redis_test_mock     => ( is => 'ro', default => sub { $ENV{DANCER_SESSION_RE
 
 has _serialization => (
   is      => 'lazy',
-  isa     => AnyOf [ Undef, $TYPE_SERIALIZATIONOBJECT ],
+  isa     => Maybe [ $TYPE_SERIALIZATIONOBJECT ],
   builder => sub {
     my ($dsl1) = @_;
     my $serialization;
@@ -105,7 +105,7 @@ has _serialization => (
 
 has _redis => (
   is      => 'lazy',
-  isa     => AnyOf [ InstanceOf ['Redis'], InstanceOf ['t::TestApp::RedisMock'] ],
+  isa     => InstanceOf [ 'Redis', 't::TestApp::RedisMock' ],
   builder => sub {
     my ($dsl2) = @_;
 
